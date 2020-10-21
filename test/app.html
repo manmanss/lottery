@@ -1,0 +1,69 @@
+<html>
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script>
+        const address = '0xF5A768B092Dc53927b6a732B8459e633ec798e2d'
+
+        const web3 = new Web3(Web3.givenProvider);
+       
+        window.addEventListener('load', async () => {
+            if(typeof(web3) === 'undefined') {
+                alert("Metamask is not installed, you cannot use this app")
+            }
+            else {
+                window.ethereum.enable();
+                await getAccounts()
+            }
+      
+        });
+        
+        const abi = JSON.parse(fs.readFileSync('./build/__contracts_lottery_sol_Lottery.abi'));
+        
+        var greetings = new web3.eth.Contract(abi, address);
+        var accounts;
+        async function getAccounts() {
+            accounts = await web3.eth.getAccounts()
+            document.getElementById('status').innerHTML = accounts[0]    
+        }
+        const setMessage = async() => {
+            message = document.getElementById("newMessage").value
+            document.getElementById('status').innerHTML = 'Please wait for processing your request'
+            await greetings.methods.setMessage(message).send({ from: accounts[0], gas: 40000 })
+            document.getElementById('status').innerHTML = 'your message is set'
+        }
+        const getMessage = async() => {
+                    message = await greetings.methods.message().call()
+            document.getElementById('message').innerHTML = message
+
+        }
+        const insertEther = async() =>{
+            
+        }
+        const pickWinner =async() =>{
+
+        }
+         
+    </script>
+</head>
+<body>
+    <h2> Lottery Contract </h2>
+    <span>Manager is :</span>
+    <script>getAccounts()</script>
+    <div>
+        <span>There are </span>
+        <span>people entering the system</span>
+    </div>
+    <div>
+        <span>The winner will get </span>
+        <span>ether</span>
+    </div><hr>
+    <h3>Wanna play?</h3>
+    <label>How much ether do you need to enter?(>=0.01 ether) </label>
+    <input type="text" id = "ether"/>
+    <button type='button' onclick='setMessage()'> Enter </button><hr>
+    <h3>Ready to pick a winner?</h3>
+    <button type='button' onclick='setMessage()'> Pick a winner! </button><hr>
+</body>
+
+</html>

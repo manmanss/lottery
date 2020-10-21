@@ -15,7 +15,7 @@ contract Lottery {
     }
     function random() private view returns (uint) {
         bytes memory val;
-        val = abi.encodePacked(block.difficulty, now, players);
+        val = abi.encodePacked(block.timestamp, block.timestamp , players);
         return uint (keccak256(val));
     }
     function pickWinner() public checkForOnlyManager {
