@@ -6,12 +6,12 @@ const web3 = new Web3(ganache.provider());
 const bytecode = fs.readFileSync('./build/__contracts_lottery_sol_Lottery.bin');
 const abi = JSON.parse(fs.readFileSync('./build/__contracts_lottery_sol_Lottery.abi'));
 var accounts;
-var basic_data_type;
-var app = express()
+var lottery;
+// var app = express()
 
 beforeEach(async () => { 
     accounts = await web3.eth.getAccounts()
-    basic_data_type = await 
+    lottery = await 
     new web3.eth.Contract(abi)
         .deploy({ 
             data: '0x'+bytecode 
@@ -24,23 +24,18 @@ beforeEach(async () => {
 });
 describe('Lottery',() => { 
 
-    // it('test one account to enter ',async () => {
-    //     await lottery.methods.enter().send({
-    //         from: accounts[0],
-    //         value: web3.utils.toWei("0.01", "ether")
-    //     });
-    //         const players =await lottery.methods.getPlayers().call({
-    //         from: accounts[0]
-    //     });
-    //         assert.strictEqual(accounts[0], players[0]);
-    //         assert.strictEqual(1, players.length);
-    //     // });
-    //         const players =await lottery.methods.getPlayers().call({
-    //         from: accounts[0]
-    //     });
-    //         assert.equal(accounts[0], players[0]);
-    //         assert.equal(1, players.length);
-    //     });
+    it('test one account to enter ',async () => {
+        await lottery.methods.enter().send({
+            from: accounts[0],
+            value: web3.utils.toWei("0.01", "ether")
+        });
+            const players =await lottery.methods.getPlayers().call({
+            from: accounts[0]
+        });
+            assert.strictEqual(accounts[0], players[0]);
+            assert.strictEqual(1, players.length);
+        // });
+        });
     
         it('test multiple account to enter ',async () => {
                 await lottery.methods.enter().send({
@@ -62,11 +57,6 @@ describe('Lottery',() => {
                 assert.strictEqual(accounts[1], players[1]);
                 assert.strictEqual(accounts[2], players[2]);
                 assert.strictEqual(3, players.length);
-            // });
-                assert.equal(accounts[0], players[0]);
-                assert.equal(accounts[1], players[1]);
-                assert.equal(accounts[2], players[2]);
-                assert.equal(3, players.length);
             });
 
         it('requires minimum amount of ether to enter', async() => {
@@ -131,14 +121,3 @@ describe('Lottery',() => {
             });
 
 });
-
-app.get('/', function (req, res) {
-    res.redirect("app.html")
-})
-app.get('/testnet', function (req, res) {
-    res.redirect("app_public.html")
-})
-
-app.listen(3000, function()  {
-    console.log("express server running at port 3000")
-})
